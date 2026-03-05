@@ -246,7 +246,7 @@ match_rm = function(match.matrix.f){
     # This function performs four match methods on a square matrix of record
     # matching outputs. The methods are one-to-one matching, SNP query matching,
     # STR query matching, and one pair matching. The values returned are 
-    # accuracies that represent the success rate fo each matching approach.
+    # accuracies that represent the success rate of each matching approach.
     # Input:
     #   match.matrix: a square matrix where rows represent the SNP profiles of
     #       the test set and columns represent the STR profiles of the test set
