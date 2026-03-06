@@ -242,7 +242,7 @@ rm = function(gp.f, af.f, gt.f, ancestry = FALSE){
     return(lambda)
 }
 
-match_rm = function(match.matrix.f){
+match_rm = function(match.matrix){
     # This function performs four match methods on a square matrix of record
     # matching outputs. The methods are one-to-one matching, SNP query matching,
     # STR query matching, and one pair matching. The values returned are 
@@ -257,7 +257,6 @@ match_rm = function(match.matrix.f){
 
     library(clue)
 
-    mat = read.table(match.matrix.f, header = TRUE, row.names = 1)
     if (!nrow(mat) == ncol(mat)){
         stop('RM score matrix is not square')
     }
