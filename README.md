@@ -56,11 +56,6 @@ bash structure_output_manip.sh
 
 Inspect the CLUMPP output files manually to determine which cluster labels correspond to each superpopulation. Then, create permutation files by copying the permutation table from each `*miscfile.txt` file and adding a header with the correct superpopulation order.
 
-**Extract and format individual allele frequencies from CLUMPP average as input for ancestry-aware record matching**
-```bash
-Rscript structure/extract_structure_afs.R
-Rscript structure/format_rm_afs.R
-```
 
 ## Running distruct
 distruct is used to produce visualizations of STRUCTURE outputs.
@@ -69,9 +64,11 @@ Download distruct:
 https://rosenberglab.stanford.edu/distruct.html
 
 Run distruct:
+```bash
 ./distructLinux1.1 -d distruct/drawparams_codis.txt
 ./distructLinux1.1 -d distruct/drawparams_allstr.txt
 ./distructLinux1.1 -d distruct/drawparams_allsnp.txt
+```
 
 ## Generating Reference Panels
 Locate the `ref_gen()` function in `genotype_imputation/imputation_functions.R`. This function generates a list of individuals for the reference panel in one iteration of genotype imputation and allele frequency calculation. The remaining 1000 Genomes profiles become the test set.
@@ -101,7 +98,7 @@ Evaluate imputation accuracy using:
 ```r
 imputation_accuracy()
 ```
-The output appears in data/imputation_accuracy.
+The output appears in `data/imputation_accuracy`.
 
 Plot the results of imputation accuracy using:
 ```bash
@@ -111,40 +108,42 @@ python downstream_analysis/mixture_panel_accuracy_plotter.py
 ```
 
 ## Extracting Allele Frequencies
-If the record matching scheme is ancestry estimation, first generate the raw allele frequency files from the CLUMPP output using either of the following functions based on the desired STRUCTURE input data (18 CODIS loci or all 3245 STRs):
-```r
-get_raw_af_ancestry_codis()
-get_raw_af_ancestry_str()
+If the record matching scheme is ancestry estimation, first generate the raw allele frequency files from the CLUMPP output then format the allele frequencies per individual using the following scripts:
+```bash
+Rscript structure/extract_structure_afs.R
+Rscript structure/format_rm_afs.R
 ```
-To extract allele frequencies for a specific matching scheme, use the following command to writes allele frequency files to the designated output directory:
+The output appears in data/allele_frequencies.
+
+To extract allele frequencies for all other record match schemes, use the following command to write allele frequency files to the designated output directory:
 ```r
 get_af_*scheme*()
 ```
-The output appears in data/allele_frequencies.
+The output appears in `data/allele_frequencies`.
 
 ## Extracting Genotype Probabilities
 Use the `get_gp()` function in `record_matching/gp_extraction.R` to extract genotype probability files from BEAGLE output:
 ```r
 get_gp()
 ```
-This function writes genotype probability files to the specified output directory.
+The output appears in `data/imputed_genotype_probabilities`.
 
 ## Running Record Matching
 To compute match scores between SNP and STR profiles, locate and run the `rm()` function in `record_matching/rm_functions.R` to calcuate the record match score using one allele frequency file, one genotype probability file, and the true CODIS genotype file.
 ```r
 rm()
 ```
-The results for each record matching scheme appear in rm_scores/<scheme>.
+The results for each record matching scheme appear in `rm_scores/<scheme>`.
 
 ## Calculate record match accuracies
 After computing match scores for all profile pairs, construct a match score matrix and calculate match accuracy:
 ```bash
 Rscript downstream_analysis/calc_match_acc.R
 ```
-The results appear in data/rm_scores/match_accuracy
+The results appear in `data/rm_scores/match_accuracy`.
 
 ## Generate ROC curves and calculate AUC values
-Use the total match score matrices to generate ROC curves and evaluate performance with AUC. Replicates with are selected for ROC curve and KDE visualization. AUC is used as a tie breaker when 
+Use the total match score matrices to generate ROC curves and evaluate performance with AUC. Replicates with median one-to-one match score are selected for ROC curve and KDE visualization. AUC is used as a tie breaker when multiple replicates have the median one-to-one match score.
 ```bash
 Rscript calc_AUCs.R
 Rscript plot_scheme_ROCs.R
