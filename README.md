@@ -71,7 +71,7 @@ Run distruct:
 ```
 
 ## Generating Reference Panels
-Locate the `ref_gen()` function in `genotype_imputation/imputation_functions.R`. This function generates a list of individuals for the reference panel in one iteration of genotype imputation and allele frequency calculation. The remaining 1000 Genomes profiles become the test set.
+Locate the `ref_gen()` function in `rm_scripts/imputation_functions.R`. This function generates a list of individuals for the reference panel in one iteration of genotype imputation and allele frequency calculation. The remaining 1000 Genomes profiles become the test set.
 
 Then, use the following functions to create reference/test set VCFs:
 ```r
@@ -81,10 +81,10 @@ generate_ref_vcfs()
 # Generate VCF files for test set
 generate_testset_vcfs()
 ```
-These functions will take in the id lists and a data file path to generate VCF files subset to include only individuals in the reference panel or only individuals in the test set. We omit the total collection of VCF files to reduce overall repo size.
+These functions will take in the id lists and a data file path to generate VCF files subset to include only individuals in the reference panel or only individuals in the test set. 
 
 ## Running Genotype Imputation
-Run the imputation by using the `impute_codis_gts()` function in `genotype_imputation/imputation_functions.R`. This function will use BEAGLE to phase the test set SNP profiles and impute the masked CODIS alleles on each haplotype.
+Run the imputation by using the `impute_codis_gts()` function in `rm_scripts/imputation_functions.R`. This function will use BEAGLE to phase the test set SNP profiles and impute the masked CODIS alleles on each haplotype.
 
 Run the imputation using:
 ```r
@@ -92,7 +92,7 @@ impute_codis_gts()
 ```
 The output appears in data/imputed_genotype_probabilities.
 
-Analyze the accuracy of the imputation by using the `imputation_accuracy()` function in `genotype_imputation/imputation_functions.R`. This function will compare the imptued CODIS alleles to one true CODIS genotype and return a score that indicates imputation accuracy.
+Analyze the accuracy of the imputation by using the `imputation_accuracy()` function in `rm_scripts/imputation_functions.R`. This function will compare the imptued CODIS alleles to one true CODIS genotype and return a score that indicates imputation accuracy.
 
 Evaluate imputation accuracy using:
 ```r
@@ -122,16 +122,16 @@ get_af_*scheme*()
 The output appears in `data/allele_frequencies`.
 
 ## Extracting Genotype Probabilities
-Use the `get_gp()` function in `record_matching/gp_extraction.R` to extract genotype probability files from BEAGLE output:
+Use the `get_gp()` function in `rm_scripts/gp_extraction.R` to extract genotype probability files from BEAGLE output:
 ```r
 get_gp()
 ```
 The output appears in `data/imputed_genotype_probabilities`.
 
 ## Running Record Matching
-To compute match scores between SNP and STR profiles, locate and run the `rm()` function in `record_matching/rm_functions.R` to calcuate the record match score using one allele frequency file, one genotype probability file, and the true CODIS genotype file.
+To compute match scores between SNP and STR profiles, locate and run the `rm()` function in `rm_scripts/rm_functions.R` to calcuate the record match score using one allele frequency file, one genotype probability file, and the true CODIS genotype file.
 ```r
-rm()
+compute_rm_matrix()
 ```
 The results for each record matching scheme appear in `rm_scores/<scheme>`.
 
@@ -145,11 +145,11 @@ The results appear in `data/rm_scores/match_accuracy`.
 ## Generate ROC curves and calculate AUC values
 Use the total match score matrices to generate ROC curves and evaluate performance with AUC. Replicates with median one-to-one match score are selected for ROC curve and KDE visualization. AUC is used as a tie breaker when multiple replicates have the median one-to-one match score.
 ```bash
-Rscript calc_AUCs.R
-Rscript plot_scheme_ROCs.R
-Rscript plot_scheme_KDEs.R
-Rscript plot_admpop_ROCs.R
-Rscript plot_admpop_KDEs.R
+Rscript rm_scripts/calc_AUCs.R
+Rscript downstream_analysis/plot_scheme_ROCs.R
+Rscript downstream_analysis/plot_scheme_KDEs.R
+Rscript downstream_analysis/plot_admpop_ROCs.R
+Rscript downstream_analysis/plot_admpop_KDEs.R
 ```
 
 ## Contact
